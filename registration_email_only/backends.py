@@ -46,7 +46,7 @@ class EmailOnlySignupBackend(DefaultBackend):
 			raise ValueError('email cannot be None')
 		user, password = create_user_and_password(request, email)
 		# log in
-		auth_user = authenticate(username=user.username, password=password)
+		auth_user = authenticate(username=user.username, password=password, email=email)
 		assert auth_user == user
 		login(request, auth_user)
 		user.set_unusable_password()
