@@ -63,14 +63,17 @@ class EmailOnlySignupBackend(DefaultBackend):
 			request=request
 		)
 		return user
-	def activate(self, request, activation_key, username, password):
+	def activate(self, request, activation_key, username=None, password=None):
 		user = activation_key_to_user(activation_key)
 		if not user:
 			return False
 		user.username = username
+		if password is None:
+			import uuid
+			password = uuid.uuid4().hex
 		user.set_password(password)
 		user.save()
-		auth_user = authenticate(username=username, password=password)
+		auth_user = authenticate(email=user.email, password=password)
 		login(request, auth_user)
 		return user
 	def get_form_class(self, request):
